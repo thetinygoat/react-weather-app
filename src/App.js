@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import Searchbar from './components/Searchbar/Searchbar';
+import Button from './components/Button/Button';
 
 class App extends Component {
-	componentDidMount() {
-		this.getLocation();
-	}
 	showPosition = position => {
 		console.log(position.coords.latitude);
 		console.log(position.coords.longitude);
@@ -16,6 +14,10 @@ class App extends Component {
 		return (
 			<div>
 				<Searchbar />
+				<Button>Search</Button>
+				<Button clicked={this.getLocation} search>
+					Get Current Weather
+				</Button>
 			</div>
 		);
 	}
