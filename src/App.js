@@ -21,7 +21,8 @@ class App extends Component {
 		type: '',
 		temp: null,
 		lat: null,
-		lon: null
+		lon: null,
+		placeName: ''
 	};
 	componentDidMount() {
 		this.getLocation();
@@ -60,11 +61,21 @@ class App extends Component {
 	getLocation = () => {
 		navigator.geolocation.getCurrentPosition(this.setPosition);
 	};
+	handlePlaceName = e => {
+		const newState = {
+			...this.state,
+			placeName: e.target.value
+		};
+		this.setState(newState);
+	};
 	render() {
 		return (
 			<Wrapper>
 				<SearchBarWrapper>
-					<Searchbar />
+					<Searchbar
+						placeName={this.state.placeName}
+						changed={this.handlePlaceName}
+					/>
 					<Button>Search</Button>
 				</SearchBarWrapper>
 				OR

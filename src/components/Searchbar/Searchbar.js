@@ -1,9 +1,21 @@
 import React from 'react';
+import styled from 'styled-components';
 
-export default function Searchbar() {
+const StyledInput = styled.input`
+	padding: 1em;
+	border-radius: 3px;
+	border: 1px solid #1982c4;
+`;
+
+export default function Searchbar(props) {
 	return (
 		<div>
-			<input type="text" placeholder="Placename" />
+			<StyledInput
+				type="text"
+				placeholder="Placename"
+				value={props.placeName}
+				onChange={props.changed}
+			/>
 		</div>
 	);
 }
