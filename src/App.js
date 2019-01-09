@@ -2,6 +2,19 @@ import React, { Component } from 'react';
 import Searchbar from './components/Searchbar/Searchbar';
 import Button from './components/Button/Button';
 import * as config from './config';
+import styled from 'styled-components';
+const Wrapper = styled.div`
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+`;
+
+const SearchBarWrapper = styled.div`
+	display: flex;
+	flex-direction: row;
+`;
 
 class App extends Component {
 	state = {
@@ -20,31 +33,45 @@ class App extends Component {
 			}&lon=${this.state.lon}&APPID=${config.API_KEY}`
 		).then(res => {
 			res.json().then(data => {
-				console.log(Math.floor(data.main.temp - 273.15));
+				console.log(data);
+				const newType = data.weather[0].main;
+				const newTemp = Math.floor(data.main.temp - 273.15);
+				const newState = {
+					...this.state,
+					type: newType,
+					temp: newTemp
+				};
+				this.setState(newState, () => {
+					console.log(this.state);
+				});
 			});
 		});
 	};
 	setPosition = position => {
 		console.log(position.coords.latitude);
 		console.log(position.coords.longitude);
-		this.setState({
+		const newState = {
 			...this.state,
 			lat: position.coords.latitude,
 			lon: position.coords.longitude
-		});
+		};
+		this.setState(newState);
 	};
 	getLocation = () => {
 		navigator.geolocation.getCurrentPosition(this.setPosition);
 	};
 	render() {
 		return (
-			<div>
-				<Searchbar />
-				<Button>Search</Button>
+			<Wrapper>
+				<SearchBarWrapper>
+					<Searchbar />
+					<Button>Search</Button>
+				</SearchBarWrapper>
+				OR
 				<Button clicked={this.handleWeatherFetch} search>
 					Get Current Weather
 				</Button>
-			</div>
+			</Wrapper>
 		);
 	}
 }
