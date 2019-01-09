@@ -3,6 +3,8 @@ import Searchbar from './components/Searchbar/Searchbar';
 import Button from './components/Button/Button';
 import * as config from './config';
 import styled from 'styled-components';
+import Spinner from './components/Spinner/Spinner';
+import WeatherInfo from './components/WeatherInfo/WeatherInfo';
 const Wrapper = styled.div`
 	display: flex;
 	justify-content: center;
@@ -22,31 +24,43 @@ class App extends Component {
 		temp: null,
 		lat: null,
 		lon: null,
-		placeName: ''
+		placeName: '',
+		loading: false
 	};
 	componentDidMount() {
 		this.getLocation();
 	}
 	handleCurrentWeatherFetch = () => {
-		fetch(
-			`http://api.openweathermap.org/data/2.5/weather?lat=${
-				this.state.lat
-			}&lon=${this.state.lon}&APPID=${config.API_KEY}`
-		).then(res => {
-			res.json().then(data => {
-				console.log(data);
-				const newType = data.weather[0].main;
-				const newTemp = Math.floor(data.main.temp - 273.15);
-				const newState = {
-					...this.state,
-					type: newType,
-					temp: newTemp
+		this.setState(
+			state => {
+				return {
+					loading: !state.loading
 				};
-				this.setState(newState, () => {
-					console.log(this.state);
+			},
+			() => {
+				fetch(
+					`http://api.openweathermap.org/data/2.5/weather?lat=${
+						this.state.lat
+					}&lon=${this.state.lon}&APPID=${config.API_KEY}`
+				).then(res => {
+					res.json().then(data => {
+						console.log(data);
+						const newType = data.weather[0].main;
+						const newTemp = Math.floor(data.main.temp - 273.15);
+						const newLoading = false;
+						const newState = {
+							...this.state,
+							type: newType,
+							temp: newTemp,
+							loading: newLoading
+						};
+						this.setState(newState, () => {
+							console.log(this.state);
+						});
+					});
 				});
-			});
-		});
+			}
+		);
 	};
 	handleWeatherSearch = () => {
 		fetch(
@@ -90,6 +104,12 @@ class App extends Component {
 		this.setState(newState);
 	};
 	render() {
+		let weatherInfo = null;
+		if (!this.state.loading) {
+			weatherInfo = <WeatherInfo />;
+		} else {
+			weatherInfo = <Spinner />;
+		}
 		return (
 			<Wrapper>
 				<SearchBarWrapper>
@@ -103,6 +123,7 @@ class App extends Component {
 				<Button clicked={this.handleCurrentWeatherFetch} search>
 					Get Current Weather
 				</Button>
+				{weatherInfo}
 			</Wrapper>
 		);
 	}
