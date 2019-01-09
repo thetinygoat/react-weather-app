@@ -27,11 +27,32 @@ class App extends Component {
 	componentDidMount() {
 		this.getLocation();
 	}
-	handleWeatherFetch = () => {
+	handleCurrentWeatherFetch = () => {
 		fetch(
 			`http://api.openweathermap.org/data/2.5/weather?lat=${
 				this.state.lat
 			}&lon=${this.state.lon}&APPID=${config.API_KEY}`
+		).then(res => {
+			res.json().then(data => {
+				console.log(data);
+				const newType = data.weather[0].main;
+				const newTemp = Math.floor(data.main.temp - 273.15);
+				const newState = {
+					...this.state,
+					type: newType,
+					temp: newTemp
+				};
+				this.setState(newState, () => {
+					console.log(this.state);
+				});
+			});
+		});
+	};
+	handleWeatherSearch = () => {
+		fetch(
+			`http://api.openweathermap.org/data/2.5/weather?q=${
+				this.state.placeName
+			}&APPID=${config.API_KEY}`
 		).then(res => {
 			res.json().then(data => {
 				console.log(data);
@@ -76,10 +97,10 @@ class App extends Component {
 						placeName={this.state.placeName}
 						changed={this.handlePlaceName}
 					/>
-					<Button>Search</Button>
+					<Button clicked={this.handleWeatherSearch}>Search</Button>
 				</SearchBarWrapper>
 				OR
-				<Button clicked={this.handleWeatherFetch} search>
+				<Button clicked={this.handleCurrentWeatherFetch} search>
 					Get Current Weather
 				</Button>
 			</Wrapper>
