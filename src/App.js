@@ -5,6 +5,7 @@ import * as config from './config';
 import styled from 'styled-components';
 import Spinner from './components/Spinner/Spinner';
 import WeatherInfo from './components/WeatherInfo/WeatherInfo';
+import NotFound from './components/NotFound/NotFound';
 const Wrapper = styled.div`
 	display: flex;
 	justify-content: center;
@@ -27,7 +28,8 @@ class App extends Component {
 		placeName: '',
 		loading: false,
 		placeValue: null,
-		icon: null
+		icon: null,
+		notFound: false
 	};
 	componentDidMount() {
 		this.getLocation();
@@ -46,10 +48,19 @@ class App extends Component {
 					}&lon=${this.state.lon}&APPID=${config.API_KEY}`
 				).then(res => {
 					res.json().then(data => {
+						if (!data.weather) {
+							this.setState(state => {
+								return {
+									notFound: !state.notFound
+								};
+							});
+							return;
+						}
 						const newType = data.weather[0].main;
 						const newIcon = data.weather[0].icon;
 						const newTemp = Math.floor(data.main.temp - 273.15);
 						const newPlaceName = data.name;
+						const newFoundStatus = false;
 						const newLoading = false;
 						const newState = {
 							...this.state,
@@ -57,7 +68,8 @@ class App extends Component {
 							temp: newTemp,
 							loading: newLoading,
 							placeValue: newPlaceName,
-							icon: newIcon
+							icon: newIcon,
+							notFound: newFoundStatus
 						};
 						this.setState(newState, () => {
 							console.log(this.state);
@@ -74,17 +86,26 @@ class App extends Component {
 			}&APPID=${config.API_KEY}`
 		).then(res => {
 			res.json().then(data => {
-				console.log(data);
+				if (!data.weather) {
+					this.setState(state => {
+						return {
+							notFound: !state.notFound
+						};
+					});
+					return;
+				}
 				const newType = data.weather[0].main;
 				const newTemp = Math.floor(data.main.temp - 273.15);
 				const newIcon = data.weather[0].icon;
 				const newPlaceValue = this.state.placeName;
+				const newFoundStatus = false;
 				const newState = {
 					...this.state,
 					type: newType,
 					temp: newTemp,
 					placeValue: newPlaceValue,
-					icon: newIcon
+					icon: newIcon,
+					notFound: newFoundStatus
 				};
 				this.setState(newState, () => {
 					console.log(this.state);
@@ -113,6 +134,10 @@ class App extends Component {
 		this.setState(newState);
 	};
 	render() {
+		let notFound = null;
+		if (this.state.notFound) {
+			notFound = <NotFound />;
+		}
 		let weatherInfo = null;
 		if (!this.state.loading) {
 			weatherInfo = (
@@ -139,6 +164,7 @@ class App extends Component {
 				<Button clicked={this.handleCurrentWeatherFetch} search>
 					Get Current Weather
 				</Button>
+				{notFound}
 				{weatherInfo}
 			</Wrapper>
 		);
