@@ -25,7 +25,9 @@ class App extends Component {
 		lat: null,
 		lon: null,
 		placeName: '',
-		loading: false
+		loading: false,
+		placeValue: null,
+		icon: null
 	};
 	componentDidMount() {
 		this.getLocation();
@@ -44,15 +46,18 @@ class App extends Component {
 					}&lon=${this.state.lon}&APPID=${config.API_KEY}`
 				).then(res => {
 					res.json().then(data => {
-						console.log(data);
 						const newType = data.weather[0].main;
+						const newIcon = data.weather[0].icon;
 						const newTemp = Math.floor(data.main.temp - 273.15);
+						const newPlaceName = data.name;
 						const newLoading = false;
 						const newState = {
 							...this.state,
 							type: newType,
 							temp: newTemp,
-							loading: newLoading
+							loading: newLoading,
+							placeValue: newPlaceName,
+							icon: newIcon
 						};
 						this.setState(newState, () => {
 							console.log(this.state);
@@ -72,10 +77,14 @@ class App extends Component {
 				console.log(data);
 				const newType = data.weather[0].main;
 				const newTemp = Math.floor(data.main.temp - 273.15);
+				const newIcon = data.weather[0].icon;
+				const newPlaceValue = this.state.placeName;
 				const newState = {
 					...this.state,
 					type: newType,
-					temp: newTemp
+					temp: newTemp,
+					placeValue: newPlaceValue,
+					icon: newIcon
 				};
 				this.setState(newState, () => {
 					console.log(this.state);
@@ -106,7 +115,14 @@ class App extends Component {
 	render() {
 		let weatherInfo = null;
 		if (!this.state.loading) {
-			weatherInfo = <WeatherInfo />;
+			weatherInfo = (
+				<WeatherInfo
+					temp={this.state.temp}
+					place={this.state.placeValue}
+					type={this.state.type}
+					icon={this.state.icon}
+				/>
+			);
 		} else {
 			weatherInfo = <Spinner />;
 		}
