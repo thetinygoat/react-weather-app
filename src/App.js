@@ -17,6 +17,9 @@ const Wrapper = styled.div`
 const SearchBarWrapper = styled.div`
 	display: flex;
 	flex-direction: row;
+	@media (max-width: 750px) {
+		flex-direction: column;
+	}
 `;
 
 class App extends Component {
@@ -150,6 +153,7 @@ class App extends Component {
 		}
 		return (
 			<Wrapper>
+				<h1>Weather Search</h1>
 				<SearchBarWrapper>
 					<Searchbar
 						placeName={this.state.placeName}
