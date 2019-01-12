@@ -89,7 +89,7 @@ class App extends Component {
 				if (!data.weather) {
 					this.setState(state => {
 						return {
-							notFound: !state.notFound
+							notFound: true
 						};
 					});
 					return;
@@ -134,10 +134,7 @@ class App extends Component {
 		this.setState(newState);
 	};
 	render() {
-		let notFound = null;
-		if (this.state.notFound) {
-			notFound = <NotFound />;
-		}
+		let notFound = <NotFound />;
 		let weatherInfo = null;
 		if (!this.state.loading) {
 			weatherInfo = (
@@ -164,8 +161,7 @@ class App extends Component {
 				<Button clicked={this.handleCurrentWeatherFetch} search>
 					Get Current Weather
 				</Button>
-				{notFound}
-				{weatherInfo}
+				{this.state.notFound ? notFound : weatherInfo}
 			</Wrapper>
 		);
 	}
