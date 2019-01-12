@@ -74,9 +74,7 @@ class App extends Component {
 							icon: newIcon,
 							notFound: newFoundStatus
 						};
-						this.setState(newState, () => {
-							console.log(this.state);
-						});
+						this.setState(newState);
 					});
 				});
 			}
@@ -110,15 +108,11 @@ class App extends Component {
 					icon: newIcon,
 					notFound: newFoundStatus
 				};
-				this.setState(newState, () => {
-					console.log(this.state);
-				});
+				this.setState(newState);
 			});
 		});
 	};
 	setPosition = position => {
-		console.log(position.coords.latitude);
-		console.log(position.coords.longitude);
 		const newState = {
 			...this.state,
 			lat: position.coords.latitude,
