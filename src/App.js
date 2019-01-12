@@ -46,7 +46,7 @@ class App extends Component {
 			},
 			() => {
 				fetch(
-					`http://api.openweathermap.org/data/2.5/weather?lat=${
+					`https://api.openweathermap.org/data/2.5/weather?lat=${
 						this.state.lat
 					}&lon=${this.state.lon}&APPID=${config.API_KEY}`
 				).then(res => {
@@ -82,7 +82,7 @@ class App extends Component {
 	};
 	handleWeatherSearch = () => {
 		fetch(
-			`http://api.openweathermap.org/data/2.5/weather?q=${
+			`https://api.openweathermap.org/data/2.5/weather?q=${
 				this.state.placeName
 			}&APPID=${config.API_KEY}`
 		).then(res => {
