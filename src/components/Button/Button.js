@@ -10,8 +10,13 @@ const StyledButton = styled.button`
 	font-size: 0.8em;
 	background-color: ${props => (props.search ? '#1982C4' : '#ffca3a')};
 	color: ${props => (props.search ? '#ffffff' : '#0f0f0f')};
+	margin-left: ${props => (props.search ? '0' : '1em')};
 	:hover {
 		opacity: 0.8;
+	}
+	@media (max-width: 750px) {
+		margin-left: ${props => (props.search ? '0' : '0')};
+		margin: 1em;
 	}
 `;
 
